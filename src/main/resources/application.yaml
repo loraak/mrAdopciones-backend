@@ -14,3 +14,7 @@ spring:
       ddl-auto: update
   application:
     name: mradopciones-backend
+app:
+  jwt:
+    secret: ${JWT_SECRET:CLAVESUPERSECREATADDASASKSLADJAS}
+    expiration-ms: 86400000

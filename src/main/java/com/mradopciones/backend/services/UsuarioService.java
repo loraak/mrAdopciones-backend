@@ -1,6 +1,9 @@
 package com.mradopciones.backend.services;
 
+import com.mradopciones.backend.entities.DTOs.LoginRequest;
+import com.mradopciones.backend.entities.DTOs.LoginResponse;
 import com.mradopciones.backend.entities.DTOs.RegistroRequest;
+import com.mradopciones.backend.entities.DTOs.UsuarioResponse;
 import com.mradopciones.backend.entities.Rol;
 import com.mradopciones.backend.entities.Usuario;
 import com.mradopciones.backend.repositories.UsuarioRepository;
@@ -16,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTService jwtService;
 
     @Transactional
     public Usuario registrar(RegistroRequest req) {
@@ -40,6 +44,9 @@ public class UsuarioService {
             if (esVacio(req.telefono())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El número de celular es obligatorio para adoptantes");
             }
+            if (esVacio(req.ocupacion())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La ocupación es obligatoria para adoptantes");
+            }
             usuario.setTelefono(req.telefono().trim());
             usuario.setOcupacion(limpiar(req.ocupacion()));
         } else {
@@ -47,6 +54,31 @@ public class UsuarioService {
             usuario.setOrganizacion(limpiar(req.organizacion()));
         }
         return usuarioRepository.save(usuario);
+    }
+
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest req) {
+        String identificador = req.username().trim();
+
+        Usuario usuario = usuarioRepository.findByUsernameIgnoreCase(identificador)
+                .or(() -> usuarioRepository.findByCorreoIgnoreCase(identificador))
+                .orElseThrow(this::credencialesInvalidas);
+
+        if (!passwordEncoder.matches(req.contrasena(), usuario.getContrasenia())) {
+            throw credencialesInvalidas();
+        }
+
+        return new LoginResponse(jwtService.generarToken(usuario), UsuarioResponse.from(usuario));
+    }
+
+    @Transactional(readOnly = true)
+    public Usuario obtenerporId(Long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sesión inválida"));
+    }
+
+    private ResponseStatusException credencialesInvalidas() {
+        return new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario o contraseña incorrectos");
     }
 
     private boolean esVacio(String s) {
