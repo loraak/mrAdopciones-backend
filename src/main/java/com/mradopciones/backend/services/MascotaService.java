@@ -2,7 +2,9 @@ package com.mradopciones.backend.services;
 
 import com.mradopciones.backend.entities.Mascota;
 import com.mradopciones.backend.repositories.MascotaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,7 +33,8 @@ public class MascotaService {
 
     public Mascota getMascotaById(Long id) {
         return mascotaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mascota no encontrada" + id));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Mascota no encontrada con id " + id));
     }
 
     public Mascota saveMascota(Mascota mascota) {
