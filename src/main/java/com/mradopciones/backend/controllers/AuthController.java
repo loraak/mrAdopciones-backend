@@ -1,9 +1,7 @@
 package com.mradopciones.backend.controllers;
 
-import com.mradopciones.backend.entities.DTOs.LoginRequest;
-import com.mradopciones.backend.entities.DTOs.LoginResponse;
-import com.mradopciones.backend.entities.DTOs.RegistroRequest;
-import com.mradopciones.backend.entities.DTOs.UsuarioResponse;
+import com.mradopciones.backend.configurations.RequiereSesion;
+import com.mradopciones.backend.entities.DTOs.*;
 import com.mradopciones.backend.entities.Usuario;
 import com.mradopciones.backend.services.UsuarioService;
 import jakarta.validation.Valid;
@@ -16,10 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final UsuarioService usuarioService;
 
     @PostMapping("/registro")
-    public ResponseEntity<UsuarioResponse> registro(@Valid @RequestBody RegistroRequest request) {
+    public ResponseEntity<UsuarioResponse> register(@Valid @RequestBody RegistroRequest request) {
         Usuario creado = usuarioService.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioResponse.from(creado));
     }
@@ -29,9 +28,9 @@ public class AuthController {
         return usuarioService.login(request);
     }
 
-    //Rutas protegidas.
+    @RequiereSesion
     @GetMapping("/me")
     public UsuarioResponse me(@RequestAttribute("userId") Long userId) {
-        return UsuarioResponse.from(usuarioService.obtenerporId(userId));
+        return UsuarioResponse.from(usuarioService.obtenerPorId(userId));
     }
 }

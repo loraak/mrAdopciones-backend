@@ -30,9 +30,9 @@ public class Mascota {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    private String imagenUrl;
+    private String imagen;
 
-    private String status;
+    private String estatus;
 
     @ElementCollection
     @CollectionTable(name = "mascotas_etiquetas", joinColumns = @JoinColumn(name = "mascota_id"))

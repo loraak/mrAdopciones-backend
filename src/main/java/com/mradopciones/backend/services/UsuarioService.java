@@ -72,7 +72,7 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public Usuario obtenerporId(Long id) {
+    public Usuario obtenerPorId(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sesión inválida"));
     }

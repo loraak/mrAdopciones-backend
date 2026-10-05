@@ -65,7 +65,7 @@ public class JWTService {
             return new TokenData(
                     Long.valueOf(claims.getSubject()),
                     claims.getStringClaim("username"),
-                    Rol.valueOf(claims.getStringClaim("role"))
+                    Rol.valueOf(claims.getStringClaim("rol"))
             );
         } catch (ParseException | JOSEException | IllegalArgumentException e) {
             throw noAutorizado("Token inválido");
