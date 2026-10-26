@@ -18,6 +18,11 @@ spring:
       ddl-auto: update
   application:
     name: mradopciones-backend
+  web:
+    error:
+      include-message: never
+      include-stacktrace: never
+      include-binding-errors: never
 app:
   jwt:
     secret: ${JWT_SECRET:CLAVESUPERSECREATADDASASKSLADJAS}
