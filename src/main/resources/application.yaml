@@ -28,3 +28,5 @@ app:
     secret: ${JWT_SECRET:CLAVESUPERSECREATADDASASKSLADJAS}
     expiration-ms: 86400000
   uploads-dir: ./uploads
+server:
+  port: ${PORT:8080}
