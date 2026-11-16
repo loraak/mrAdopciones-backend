@@ -87,7 +87,7 @@ public class MensajeService {
 
     // ---------- reglas de acceso ----------
 
-    private SolicitudAdopcion chatHabilitado(Long solicitudId, Long userId) {
+    public SolicitudAdopcion chatHabilitado(Long solicitudId, Long userId) {
         SolicitudAdopcion solicitud = solicitudRepository.findById(solicitudId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conversación no encontrada"));
 

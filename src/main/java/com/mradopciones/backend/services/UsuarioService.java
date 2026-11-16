@@ -23,6 +23,10 @@ public class UsuarioService {
 
     @Transactional
     public Usuario registrar(RegistroRequest req) {
+        if (req.rol() == Rol.ADMIN) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Rol no permitido");
+        }
+
         String username = req.username().trim();
         String correo = req.correo().trim().toLowerCase();
 

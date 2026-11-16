@@ -34,13 +34,13 @@ class LoginRequestValidationTest {
     @Test
     void camposVacios_seRechazan() {
         assertThat(camposConError(new LoginRequest("", "   ")))
-                .containsExactlyInAnyOrder("username", "password");
+                .containsExactlyInAnyOrder("username", "contrasena");
     }
 
     @Test
     void contrasenaDe72Caracteres_seAcepta_yDe73_seRechaza() {
         assertThat(camposConError(new LoginRequest("maria", "x".repeat(72)))).isEmpty();
-        assertThat(camposConError(new LoginRequest("maria", "x".repeat(73)))).containsExactly("password");
+        assertThat(camposConError(new LoginRequest("maria", "x".repeat(73)))).containsExactly("contrasena");
     }
 
     @Test

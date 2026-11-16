@@ -38,16 +38,17 @@ class AuthApiIntegrationTest {
 
     private void registrar(String usuario, String rol) throws Exception {
         String json = """
-                {"username":"%s","email":"%s@mail.com","password":"Clave1234","role":"%s","phone":"4421234567"}
-                """.formatted(usuario, usuario, rol);
-        mockMvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content(json))
+            {"username":"%s","correo":"%s@mail.com","contrasena":"Clave1234","rol":"%s",
+             "telefono":"4421234567","ocupacion":"Estudiante"}
+            """.formatted(usuario, usuario, rol);
+        mockMvc.perform(post("/api/auth/registro").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated());
     }
 
     private String iniciarSesion(String usuario, String clave) throws Exception {
         String json = """
-                {"username":"%s","password":"%s"}
-                """.formatted(usuario, clave);
+            {"username":"%s","contrasena":"%s"}
+            """.formatted(usuario, clave);
         String respuesta = mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -62,7 +63,8 @@ class AuthApiIntegrationTest {
         mockMvc.perform(get("/api/auth/me").header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("ana"))
-                .andExpect(jsonPath("$.password").doesNotExist());   // nunca se devuelve la contraseña
+                .andExpect(jsonPath("$.contrasena").doesNotExist())     // nunca se devuelve la contraseña
+                .andExpect(jsonPath("$.contrasenia").doesNotExist());  // nunca se devuelve la contraseña
     }
 
     @Test
@@ -75,11 +77,11 @@ class AuthApiIntegrationTest {
         registrar("ana", "ADOPTANTE");
 
         String malaClave = """
-                {"username":"ana","password":"incorrecta1"}
-                """;
+            {"username":"ana","contrasena":"incorrecta1"}
+            """;
         String noExiste = """
-                {"username":"nadie","password":"Clave1234"}
-                """;
+            {"username":"nadie","contrasena":"Clave1234"}
+            """;
 
         mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(malaClave))
                 .andExpect(status().isUnauthorized())

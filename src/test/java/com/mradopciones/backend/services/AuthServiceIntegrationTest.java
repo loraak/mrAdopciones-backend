@@ -34,7 +34,7 @@ class AuthServiceIntegrationTest {
     @Autowired private JWTService jwtService;
 
     private RegistroRequest registro(String usuario, String correo) {
-        return new RegistroRequest(usuario, correo, "Clave1234", Rol.ADOPTANTE, "4421234567", null, null, null);
+        return new RegistroRequest(usuario, correo, "Clave1234", Rol.ADOPTANTE, "4421234567", "Estudiante", null, null);
     }
 
     private void assertEstatus(Throwable error, int esperado) {
