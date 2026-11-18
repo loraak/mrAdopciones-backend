@@ -89,9 +89,12 @@ public class SolicitudAdopcionService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Esta solicitud ya fue respondida");
         }
 
+        if (ACEPTADA.equals(nuevoEstatus) && !MASCOTA_DISPONIBLE.equalsIgnoreCase(mascota.getEstatus())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Esta mascota ya tiene una solicitud aceptada");
+        }
+
         solicitud.setEstatus(nuevoEstatus);
 
-        // Al aceptar, la mascota sale del catálogo. El donante puede cambiarlo después en "Mis mascotas".
         if (ACEPTADA.equals(nuevoEstatus)) {
             mascota.setEstatus(MASCOTA_EN_PROCESO);
         }
